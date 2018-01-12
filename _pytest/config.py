@@ -1004,7 +1004,7 @@ class Config(object):
 
     def _initini(self, args):
         ns, unknown_args = self._parser.parse_known_and_unknown_args(args, namespace=self.option.copy())
-        r = determine_setup(ns.inifilename, ns.file_or_dir + unknown_args, warnfunc=self.warn)
+        r = determine_setup(ns.inifilename, ns.file_or_dir + unknown_args, warnfunc=self.warn, trace=self.trace)
         self.rootdir, self.inifile, self.inicfg = r
         self._parser.extra_info['rootdir'] = self.rootdir
         self._parser.extra_info['inifile'] = self.inifile
@@ -1336,8 +1336,9 @@ def get_dirs_from_args(args):
     ]
 
 
-def determine_setup(inifile, args, warnfunc=None):
+def determine_setup(inifile, args, warnfunc=None, trace=None):
     dirs = get_dirs_from_args(args)
+    trace("initial dirs %s" % dirs))
     if inifile:
         iniconfig = py.iniconfig.IniConfig(inifile)
         try:
@@ -1345,20 +1346,28 @@ def determine_setup(inifile, args, warnfunc=None):
         except KeyError:
             inicfg = None
         rootdir = get_common_ancestor(dirs)
+        trace("inifile found, %s" % rootdir)
     else:
         ancestor = get_common_ancestor(dirs)
+        trace("inifile not found, %s" % rootdir)
         rootdir, inifile, inicfg = getcfg([ancestor], warnfunc=warnfunc)
+        trace("%s %s" % (rootdir, inicfg))
         if rootdir is None:
+            trace("rootdir is None")
             for rootdir in ancestor.parts(reverse=True):
+                trace("Try rootdir, %s" % rootdir)
                 if rootdir.join("setup.py").exists():
                     break
             else:
                 rootdir, inifile, inicfg = getcfg(dirs, warnfunc=warnfunc)
+                trace("Via inicfg rootdir %s" % rootdir)
                 if rootdir is None:
                     rootdir = get_common_ancestor([py.path.local(), ancestor])
+                    trace("Common ancestor, %s" % rootdir)
                     is_fs_root = os.path.splitdrive(str(rootdir))[1] == '/'
                     if is_fs_root:
                         rootdir = ancestor
+        trace("Final rootdir %s" % rootdir)
     return rootdir, inifile, inicfg or {}
 
 
