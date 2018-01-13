@@ -1362,6 +1362,7 @@ def determine_setup(inifile, args, warnfunc=None, trace=None):
                 rootdir, inifile, inicfg = getcfg(dirs, warnfunc=warnfunc)
                 trace("Via inicfg rootdir %s" % rootdir)
                 if rootdir is None:
+                    trace("py.path.local(), %s" % py.path.local())
                     rootdir = get_common_ancestor([py.path.local(), ancestor])
                     trace("Common ancestor, %s" % rootdir)
                     is_fs_root = os.path.splitdrive(str(rootdir))[1] == '/'
