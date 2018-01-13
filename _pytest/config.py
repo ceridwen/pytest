@@ -1338,7 +1338,7 @@ def get_dirs_from_args(args):
 
 def determine_setup(inifile, args, warnfunc=None, trace=None):
     dirs = get_dirs_from_args(args)
-    trace("initial dirs %s" % dirs))
+    trace("initial dirs %s" % dirs)
     if inifile:
         iniconfig = py.iniconfig.IniConfig(inifile)
         try:
