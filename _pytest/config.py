@@ -1349,7 +1349,7 @@ def determine_setup(inifile, args, warnfunc=None, trace=None):
         trace("inifile found, %s" % rootdir)
     else:
         ancestor = get_common_ancestor(dirs)
-        trace("inifile not found, %s" % rootdir)
+        trace("inifile not found, %s" % ancestor)
         rootdir, inifile, inicfg = getcfg([ancestor], warnfunc=warnfunc)
         trace("%s %s" % (rootdir, inicfg))
         if rootdir is None:
